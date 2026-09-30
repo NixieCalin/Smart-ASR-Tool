@@ -3,6 +3,17 @@ from tkinter import messagebox, filedialog
 import speech_recognition as sr
 import threading
 
+# UI Theme
+BG_COLOR = "#F3F0FA"
+PANEL_COLOR = "#FFFFFF"
+PRIMARY_COLOR = "#7656C9"
+PRIMARY_HOVER = "#6344B5"
+ACCENT_COLOR = "#E6E0F2"
+ACCENT_HOVER = "#D8CEEA"
+TEXT_COLOR = "#332D45"
+MUTED_TEXT = "#77708A"
+SUCCESS_COLOR = "#4F9878"
+ERROR_COLOR = "#C45D7A"
 
 def recognize_speech():
     recognizer = sr.Recognizer()
@@ -120,62 +131,111 @@ def clear_text():
     text_box.delete("1.0", tk.END)
     status_label.config(text="Ready")
 
-
 # Main window
 root = tk.Tk()
-root.title("Smart Speech-to-Text ASR Tool")
-root.geometry("700x500")
+root.title("Smart Speech-to-Text Transcription App")
+root.geometry("760x640")
+root.minsize(680, 560)
+root.configure(bg=BG_COLOR)
 
 tk.Label(
     root,
-    text="Smart Speech-to-Text ASR Tool",
-    font=("Arial", 20, "bold")
-).pack(pady=20)
+    text="Smart Speech Transcription ASR Tool",
+    font=("Segoe UI", 25, "bold"),
+    bg=BG_COLOR,
+    fg=TEXT_COLOR
+).pack(pady=(28, 4))
+
+tk.Label(
+    root,
+    text="Turn your speech and audio into text",
+    font=("Segoe UI", 11),
+    bg=BG_COLOR,
+    fg=MUTED_TEXT
+).pack(pady=(0, 14))
 
 status_label = tk.Label(
     root,
     text="Ready",
-    font=("Arial", 11)
+    font=("Segoe UI", 10),
+    bg=BG_COLOR,
+    fg=MUTED_TEXT
 )
-status_label.pack(pady=10)
+status_label.pack(pady=(0, 12))
 
 text_box = tk.Text(
     root,
-    height=15,
-    width=75,
-    font=("Arial", 12),
-    wrap=tk.WORD
+    height=10,
+    font=("Segoe UI", 13),
+    bg=PANEL_COLOR,
+    fg=TEXT_COLOR,
+    insertbackground=PRIMARY_COLOR,
+    selectbackground=ACCENT_COLOR,
+    selectforeground=TEXT_COLOR,
+    relief="flat",
+    borderwidth=0,
+    wrap=tk.WORD,
+    padx=18,
+    pady=16,
+    highlightthickness=1,
+    highlightbackground="#E1E4ED",
+    highlightcolor=PRIMARY_COLOR
 )
-text_box.pack(padx=20, pady=10, fill="both", expand=True)
+text_box.pack(
+    padx=32,
+    pady=(0, 18),
+    fill="both",
+    expand=True
+)
 
-button_frame = tk.Frame(root)
-button_frame.pack(pady=15)
+button_frame = tk.Frame(root, bg=BG_COLOR)
+button_frame.pack(pady=(0, 28))
+
+def style_button(button, *, primary=False, width=15):
+    button.configure(
+        width=width,
+        font=("Segoe UI", 10, "bold" if primary else "normal"),
+        bg=PRIMARY_COLOR if primary else ACCENT_COLOR,
+        fg="#FFFFFF" if primary else TEXT_COLOR,
+        activebackground=PRIMARY_HOVER if primary else ACCENT_HOVER,
+        activeforeground="#FFFFFF" if primary else TEXT_COLOR,
+        relief="flat",
+        borderwidth=0,
+        cursor="hand2",
+        padx=8,
+        pady=10
+    )
+
 record_button = tk.Button(
     button_frame,
-    text="🎤 Start Recording",
-    command=start_recording,
-    width=18
+    text="🎤  Start Recording",
+    command=start_recording
 )
-record_button.grid(row=0, column=0, padx=5)
+style_button(record_button, primary=True, width=19)
+record_button.grid(row=0, column=0, padx=6)
 
-tk.Button(
+audio_button = tk.Button(
     button_frame,
-    text="📁 Audio File",
-    command=recognize_audio_file,
-    width=15
-).grid(row=0, column=1, padx=5)
+    text="📁  Audio File",
+    command=recognize_audio_file
+)
+style_button(audio_button, width=15)
+audio_button.grid(row=0, column=1, padx=6)
 
-tk.Button(
+save_button = tk.Button(
     button_frame,
     text="Save Text",
-    command=save_text,
-    width=15
-).grid(row=0, column=2, padx=5)
+    command=save_text
+)
+style_button(save_button, width=13)
+save_button.grid(row=0, column=2, padx=6)
 
-tk.Button(
+clear_button = tk.Button(
     button_frame,
     text="Clear",
-    command=clear_text,
-    width=12
-).grid(row=0, column=3, padx=5)
+    command=clear_text
+)
+style_button(clear_button, width=10)
+clear_button.grid(row=0, column=3, padx=6)
+
 root.mainloop()
